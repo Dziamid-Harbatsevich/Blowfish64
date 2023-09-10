@@ -1,0 +1,171 @@
+﻿<Window x:Class="Blowfish64.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Blowfish64"
+        xmlns:fas="http://schemas.fontawesome.com/icons/"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        TextElement.Foreground="#454d66"
+        Background="#efeeb4"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        FontSize="16"
+        Title="ШПС-Б64" Height="700" Width="900">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="BorderBrush" Value="Green"/>
+        </Style>
+    </Window.Resources>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Height="20">
+            <MenuItem Header="Файл" Height="20" BorderThickness="1" BorderBrush="SaddleBrown">
+                <MenuItem Header="Открыть текст" Command="{Binding OpenPlainFromFileCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Regular_File" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Открыть шифр" Command="{Binding OpenEncryptedFromFileCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Regular_File" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Сохранить текст как..." Command="{Binding SavePlainToFileDialogCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Solid_Save" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Сохранить шифр как..." Command="{Binding SaveEncryptedToFileDialogCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Solid_Save" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Импорт ключа" Command="{Binding ImportKeyCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Solid_Key" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Экспорт ключа" Command="{Binding ExportKeyCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Solid_Key" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Сброс" Command="{Binding ResetCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Solid_Snowplow" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Выход" Command="{Binding ExitAppCommand}">
+                    <MenuItem.Icon>
+                        <fas:FontAwesome Icon="Solid_DoorOpen" FontSize="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Редактировать" Height="20" BorderThickness="1" BorderBrush="SaddleBrown">
+                <MenuItem Header="Вырезать" Command="Cut" />
+                <MenuItem Header="Копировать" Command="Copy" />
+                <MenuItem Header="Вставить" Command="Paste" />
+            </MenuItem>
+            <MenuItem Header="Шифр" Height="20" BorderThickness="1" BorderBrush="SaddleBrown">
+                <MenuItem Header="Зашифровать файл" Command="{Binding EncodeFileCommand}" />
+                <MenuItem Header="Расшифровать файл" Command="{Binding DecodeFileCommand}" />
+            </MenuItem>
+            <MenuItem Header="Помощь" Command="{Binding HelpAppCommand}" Height="20" BorderThickness="1" BorderBrush="SaddleBrown" />
+        </Menu>
+
+        <StackPanel Margin="7">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Width="450" Margin="10" VerticalAlignment="Center">
+                    <StackPanel Margin="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Размер ключа (&lt;448 бит):" Margin="0,0,3,0" FontSize="14"/>
+                        <TextBlock x:Name="KeyTextSizeTextBlock" Text=""/>
+                    </StackPanel>
+                    <TextBox x:Name="KeyTextBox"
+                             Text="qwerty"
+                             Margin="5"
+                             Padding="3"
+                             TextChanged="KeyTextBox_TextChanged"
+                             BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                            <StackPanel HorizontalAlignment="Center" Margin="10 0">
+                                <TextBlock Text="ключ (бит)" FontSize="11"/>
+                                <xctk:IntegerUpDown Name="myUpDownControl" Minimum="2" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Button Content="Генератор" Margin="10" Padding="4 3" Background="#688B84" Click="ButtonGenerateKey_Click"/>
+                        <Button Content="Автоключ" Margin="10" Padding="4 3" Background="#688B84" Click="ButtonAutoKey_Click"/>
+                        <Button Content="Применить" Margin="10" Padding="4 3" Background="#4F4537" Click="ButtonSetKey_Click"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Width="280" Margin="10" materialDesign:BottomDashedLineAdorner.Brush="Black">
+                    <StackPanel Margin="5" Orientation="Horizontal">
+                        <TextBlock Text="Размер текста (симв.):" Margin="0,0,3,0"/>
+                        <TextBlock x:Name="PlainTextSizeTextBlock" Text=""/>
+                    </StackPanel>
+                    <StackPanel Margin="5" Orientation="Horizontal">
+                        <TextBlock Text="Размер шифра (симв.):" Margin="0,0,3,0"/>
+                        <TextBlock x:Name="EncryptedTextSizeTextBlock" Text=""/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Width="710" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,10,0,0">
+                <TextBox x:Name="PlainTextBox"
+                         Width="510"
+                         Height="200"
+                         Text="Исходный текст"
+                         FontFamily="Verdana"
+                         TextChanged="PlainTextBox_TextChanged"
+                         AcceptsReturn="True"
+                         TextWrapping="WrapWithOverflow"
+                         VerticalScrollBarVisibility="Auto"/>
+
+                <Button x:Name="EncryptButton" Margin="30 0 0 0"
+                        Width="150" Height="40"
+                        Foreground="#f7d6d1" FontWeight="Bold"
+                        Background="#688B84"
+                        Click="ButtonEncrypt_Click"
+                        IsEnabled="{Binding DataContext.IsKeySet}"
+                        Padding="4">
+                    <StackPanel Orientation="Horizontal">
+                        <fas:FontAwesome Icon="Solid_Lock" Margin="0,0,5,0"/>
+                        <TextBlock>Зашифровать</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Width="710" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,10,0,0">
+                <TextBox x:Name="EncryptedTextBox"
+                         Width="510"
+                         Height="200"
+                         Text="Шифротекст"
+                         FontFamily="Verdana"
+                         TextChanged="EncryptedTextBox_TextChanged"
+                         AcceptsReturn="True"
+                         TextWrapping="WrapWithOverflow"
+                         VerticalScrollBarVisibility="Auto"/>
+
+                <Button x:Name="DecryptButton" Margin="30 0 0 0"
+                        Width="150" Height="40"
+                        Foreground="#FDEBD3" FontWeight="Bold"
+                        Background="#688B84"
+                        Click="ButtonDecrypt_Click"
+                        IsEnabled="{Binding DataContext.IsKeySet}"
+                        Padding="4">
+                    <StackPanel Orientation="Horizontal">
+                        <fas:FontAwesome Icon="Solid_Unlock" Margin="0,0,5,0"/>
+                        <TextBlock>Расшифровать</TextBlock>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+
+</Window>
