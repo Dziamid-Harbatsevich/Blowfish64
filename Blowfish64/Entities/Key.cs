@@ -11,4 +11,9 @@ public class _Key
     {
         return length > MAX_CHAR_KEY_LENGTH || length < 2 ? MAX_CHAR_KEY_LENGTH : length;
     }
+
+    internal static string SubstringKeyValue(string KeyValue, int length = MAX_CHAR_KEY_LENGTH)
+    {
+        return KeyValue[..length];
+    }
 }

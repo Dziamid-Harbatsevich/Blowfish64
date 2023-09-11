@@ -40,7 +40,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
     public string PlaintText { get; set; }
     public string EncryptedText { get; set; }
-    private BlowfishContext Blowfish { get; set; }
+    private BlowfishContext? Blowfish { get; set; }
 
     public MainWindow()
     {
@@ -225,6 +225,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         PlainTextBox.Text = "";
         EncryptedTextBox.Text = "";
         Blowfish = null;
+        IsKeySet = false;
     }
 
     private RelayCommand exitAppCommand;
@@ -267,7 +268,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (dialog.ShowDialog() != true) return;
 
         _key = dialog._key;
-        KeyTextBox.Text = _key.KeyValue;
+        if (_key.KeyValue.Length > 0)
+        {
+            KeyTextBox.Text = _key.KeyValue;
+            AutoKeySet();
+        }
     }
 
     private void ButtonAutoKey_Click(object sender, RoutedEventArgs e)
@@ -295,7 +300,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             KeyTextBox.Text = _key.KeyValue;
         }
         string str = KeyTextBox.Text;
-        byte[] strBytes = Encoding.UTF8.GetBytes(str);
+        byte[] strBytes = Encoding.Unicode.GetBytes(str);
+        if (strBytes.Length < 4)
+        {
+            MessageBox.Show("Длина ключа должна быть не менее 32 бит",
+                        "ВНИМАНИЕ! Ключ менее допустимой длины",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+            return;
+        }
+        else if (strBytes.Length < 24 && strBytes.Length >= 4)
+        {
+            MessageBoxResult mRes = MessageBox.Show("Применить этот ключ все равно? Ключ с низкой криптостойкостью обладает меньшей защитой.",
+                        "ВНИМАНИЕ! Низкая криптостойкость ключа",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+            if (mRes == MessageBoxResult.No)
+                return;
+        }
         Blowfish = new BlowfishContext(strBytes);
         IsKeySet = true;
     }

@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Blowfish64.Entities;
 using System.Windows.Controls.Primitives;
+using System.Text;
 
 namespace Blowfish64.Windows;
 
@@ -85,7 +86,8 @@ public partial class KeyGeneratorWindow : Window
 
     private void button3_Click(object sender, RoutedEventArgs e)
     {
-        if (textBox1.Text == "" || int.Parse(textBox1.Text) != _key.KeyValue.Length || textBox1.Text == "0")
+        int keyByteLength = Encoding.Unicode.GetBytes(_key.KeyValue).Length;
+        if (textBox1.Text == "" || int.Parse(textBox1.Text) != keyByteLength || textBox1.Text == "0")
         {
             _key.KeyValue = "";
             MessageBoxResult result = MessageBox.Show("Ключ не сгенерирован.", "ВНИМАНИЕ!", MessageBoxButton.OKCancel);
@@ -143,12 +145,12 @@ public partial class KeyGeneratorWindow : Window
             if (int.Parse(textBox1.Text) < 32 && int.Parse(textBox1.Text) >= 24)
             {
                 label5.Foreground = Brushes.Brown;
-                label5.Content = "Криптостойкость выше среднего.";
+                label5.Content = "Криптостойкость средняя.";
             }
             if (int.Parse(textBox1.Text) < 24 && int.Parse(textBox1.Text) >= 8)
             {
                 label5.Foreground = Brushes.Orange;
-                label5.Content = "Криптостойкость средняя.";
+                label5.Content = "Криптостойкость ниже среднего.";
             }
             if (int.Parse(textBox1.Text) <= 8 && int.Parse(textBox1.Text) > 3)
             {
@@ -184,8 +186,8 @@ public partial class KeyGeneratorWindow : Window
         var point = PointToScreen(relativePosition);
         _popup.HorizontalOffset = point.X;
         _popup.VerticalOffset = point.Y;
-
-        if (_key.KeyValue.Length < _key.KeyLength)
+        int keyByteLength = Encoding.Unicode.GetBytes(_key.KeyValue).Length;
+        if (keyByteLength < _key.KeyLength)
         {
             iter++;
             byte L = (byte)((point.X + rand.Next(0, 100) * point.Y + rand.Next(0, 100)) % 94);
