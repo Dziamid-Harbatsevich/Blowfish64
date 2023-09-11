@@ -12,6 +12,8 @@ using Blowfish64Lib;
 using Blowfish64.Windows;
 using Blowfish64.Entities;
 using System.ComponentModel;
+using System.Windows.Markup;
+using System;
 
 namespace Blowfish64;
 /// <summary>
@@ -205,7 +207,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Decrypt file
         string? content = Filesystem.GetContentFromFile(ENCRYPTED_DIR_NAME);
-        if (content != null)
+
+        if (content != null && ValidateDataCorruption(content))
             content = Decrypt(content);
 
         if (content?.Length > 0)
@@ -353,14 +356,35 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (Blowfish != null)
         {
             EncryptedText = EncryptedTextBox.Text;
-            PlaintText = Decrypt(EncryptedText);
-            PlainTextBox.Text = PlaintText;
+
+            if (EncryptedText.Length != 0 && ValidateDataCorruption(EncryptedText))
+            {
+                PlaintText = Decrypt(EncryptedText);
+                PlainTextBox.Text = PlaintText;
+            }
         }
     }
 
     private string Decrypt(string encryptedText)
     {
         return Blowfish.Decrypt(encryptedText);
+    }
+
+    private bool ValidateDataCorruption(string encrypted)
+    {
+        Span<byte> tmp = Encoding.UTF8.GetBytes(EncryptedText);
+        int size = 0;
+        bool isConvertable = Convert.TryFromBase64String(EncryptedText, tmp, out size);
+        bool isLengthValid = tmp.Length % 8 == 0;
+        if (isConvertable && isLengthValid)
+            return true;
+
+        MessageBox.Show("Расшифрование не может быть осуществлено, так как данные повреждены",
+                    "ВНИМАНИЕ! Данные повреждены",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Stop);
+
+        return false;
     }
 
     #endregion Button Click handlers
