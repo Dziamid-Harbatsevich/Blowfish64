@@ -324,9 +324,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void ButtonEncrypt_Click(object sender, RoutedEventArgs e)
     {
-        PlaintText = PlainTextBox.Text;
-        EncryptedText = Encrypt(PlaintText);
-        EncryptedTextBox.Text = EncryptedText;
+        if (Blowfish != null)
+        {
+            PlaintText = PlainTextBox.Text;
+            EncryptedText = Encrypt(PlaintText);
+            EncryptedTextBox.Text = EncryptedText;
+        }
     }
 
     private string Encrypt(string plainText)
@@ -347,9 +350,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void ButtonDecrypt_Click(object sender, RoutedEventArgs e)
     {
-        EncryptedText = EncryptedTextBox.Text;
-        PlaintText = Decrypt(EncryptedText);
-        PlainTextBox.Text = PlaintText;
+        if (Blowfish != null)
+        {
+            EncryptedText = EncryptedTextBox.Text;
+            PlaintText = Decrypt(EncryptedText);
+            PlainTextBox.Text = PlaintText;
+        }
     }
 
     private string Decrypt(string encryptedText)
