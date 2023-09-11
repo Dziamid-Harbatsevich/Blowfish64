@@ -227,6 +227,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         KeyTextBox.Text = "";
         PlainTextBox.Text = "";
         EncryptedTextBox.Text = "";
+        _key = new _Key();
         Blowfish = null;
         IsKeySet = false;
     }
