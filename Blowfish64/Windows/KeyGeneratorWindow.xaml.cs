@@ -19,7 +19,6 @@ public partial class KeyGeneratorWindow : Window
     Point p;
     Random rand;
     internal _Key _key;
-    public string KeyTmpValue;
     private Popup _popup;
 
     public KeyGeneratorWindow()
@@ -190,12 +189,12 @@ public partial class KeyGeneratorWindow : Window
         if (keyByteLength < _key.KeyLength)
         {
             iter++;
-            byte L = (byte)((point.X + rand.Next(0, 100) * point.Y + rand.Next(0, 100)) % 94);
+            byte L = (byte)((point.X + rand.Next(0, 100) * point.Y + rand.Next(0, 100)) % 94); // {32; 125} ASCII
             L += 32;
             _key.KeyValue += (char)L;
             NewKeyTextBox.Text = _key.KeyValue;
             KeyLiveLengthLabel.Content = iter.ToString();
-            Thread.Sleep(5);
+            Thread.Sleep(50);
         }
         else
         {

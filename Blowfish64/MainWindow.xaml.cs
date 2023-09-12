@@ -12,7 +12,6 @@ using Blowfish64Lib;
 using Blowfish64.Windows;
 using Blowfish64.Entities;
 using System.ComponentModel;
-using System.Windows.Markup;
 using System;
 
 namespace Blowfish64;
@@ -194,25 +193,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_key.KeyValue?.Length != 0)
         {
             MessageBoxResult dRes = MessageBox.Show("Желаете использовать введенный ключ (Да) или импортировать (Нет)?",
-                            "Уточняем ключа шифрования!",
+                            "Уточнение ключа шифрования!",
                             MessageBoxButton.YesNo,
                             MessageBoxImage.Question);
 
             if (dRes == MessageBoxResult.No)
-            {
                 ImportKeyExecute(0);
-                AutoKeySet();
-            }
+            AutoKeySet();
         }
 
         // Decrypt file
         string? content = Filesystem.GetContentFromFile(ENCRYPTED_DIR_NAME);
 
         if (content != null && ValidateDataCorruption(content))
+        {
             content = Decrypt(content);
 
-        if (content?.Length > 0)
-            Filesystem.PutContentToFile(PLAIN_DIR_NAME, content, PLAIN_FILE_PREFIX);
+            if (content?.Length > 0)
+                Filesystem.PutContentToFile(PLAIN_DIR_NAME, content, PLAIN_FILE_PREFIX);
+        }
     }
 
     #endregion Encipher File commands

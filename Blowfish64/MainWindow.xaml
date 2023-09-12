@@ -34,12 +34,12 @@
                         <fas:FontAwesome Icon="Regular_File" FontSize="12" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Сохранить текст как..." Command="{Binding SavePlainToFileDialogCommand}">
+                <MenuItem Header="Сохранить текст" Command="{Binding SavePlainToFileDialogCommand}">
                     <MenuItem.Icon>
                         <fas:FontAwesome Icon="Solid_Save" FontSize="12" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Сохранить шифр как..." Command="{Binding SaveEncryptedToFileDialogCommand}">
+                <MenuItem Header="Сохранить шифр" Command="{Binding SaveEncryptedToFileDialogCommand}">
                     <MenuItem.Icon>
                         <fas:FontAwesome Icon="Solid_Save" FontSize="12" />
                     </MenuItem.Icon>
