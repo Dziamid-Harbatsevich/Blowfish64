@@ -366,7 +366,7 @@ public class BlowfishContext
     {
         uint xl, xr;
         if (length % 8 != 0)
-            throw new Exception("Length must be a multiple of 8");
+            throw new Exception("Размер данных должен быть кратен 8 байтам.");
 
         for (int i = 0; i < length; i += 8)
         {
@@ -409,7 +409,7 @@ public class BlowfishContext
     public void Decrypt(byte[] data, int length)
     {
         if (length % 8 != 0)
-            throw new Exception("Length must be a multiple of 8");
+            throw new Exception("Размер данных должен быть кратен 8 байтам.");
 
         for (int i = 0; i < length; i += 8)
         {

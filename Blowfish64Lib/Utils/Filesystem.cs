@@ -50,7 +50,7 @@ public static class Filesystem
                 }
                 else
                 {
-                    MessageBox.Show("Content not found.",
+                    MessageBox.Show("Содержимое отсутствует.",
                         "Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
