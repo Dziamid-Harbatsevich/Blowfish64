@@ -114,6 +114,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (content != null)
         {
             KeyTextBox.Text = content;
+            _key = new _Key
+            {
+                KeyLength = content.Length,
+                KeyValue = content
+            };
         }
     }
 
@@ -288,9 +293,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         AutoKeySet();
     }
 
-    private void AutoKeySet(bool isNewKey = false)
+    private void AutoKeySet(bool isAutoKey = false)
     {
-        if (isNewKey)
+        if (isAutoKey)
         {
             int length = _Key.MAX_CHAR_KEY_LENGTH;
             if (myUpDownControl.Value != null)
@@ -372,19 +377,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private bool ValidateDataCorruption(string encrypted)
     {
-        Span<byte> tmp = Encoding.UTF8.GetBytes(EncryptedText);
-        int size = 0;
-        bool isConvertable = Convert.TryFromBase64String(EncryptedText, tmp, out size);
-        bool isLengthValid = tmp.Length % 8 == 0;
-        if (isConvertable && isLengthValid)
+        //Span<byte> tmp = Encoding.UTF8.GetBytes(EncryptedText);
+        //int size = 0;
+        //bool isConvertable = Convert.TryFromBase64String(EncryptedText, tmp, out size);
+        //bool isLengthValid = tmp.Length % 8 == 0;
+        //if (isConvertable && isLengthValid)
             return true;
 
-        MessageBox.Show("Расшифрование не может быть осуществлено, так как данные повреждены",
-                    "ВНИМАНИЕ! Данные повреждены",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Stop);
+        //MessageBox.Show("Расшифрование не может быть осуществлено, так как данные повреждены",
+        //            "ВНИМАНИЕ! Данные повреждены",
+        //            MessageBoxButton.OK,
+        //            MessageBoxImage.Stop);
 
-        return false;
+        //return false;
     }
 
     #endregion Button Click handlers
