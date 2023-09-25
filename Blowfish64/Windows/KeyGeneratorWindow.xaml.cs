@@ -24,6 +24,8 @@ public partial class KeyGeneratorWindow : Window
     public KeyGeneratorWindow()
     {
         InitializeComponent();
+
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         isGenEnabled = false;
         _key = new _Key()
         {
@@ -85,7 +87,7 @@ public partial class KeyGeneratorWindow : Window
 
     private void SubmitButton_Click(object sender, RoutedEventArgs e)
     {
-        int keyByteLength = Encoding.Unicode.GetBytes(_key.KeyValue).Length;
+        int keyByteLength = Encoding.GetEncoding(1251).GetBytes(_key.KeyValue).Length;
         if (KeyLengthTextBox.Text == "" || int.Parse(KeyLengthTextBox.Text) != keyByteLength || KeyLengthTextBox.Text == "0")
         {
             _key.KeyValue = "";
@@ -185,7 +187,7 @@ public partial class KeyGeneratorWindow : Window
         var point = PointToScreen(relativePosition);
         _popup.HorizontalOffset = point.X;
         _popup.VerticalOffset = point.Y;
-        int keyByteLength = Encoding.Unicode.GetBytes(_key.KeyValue).Length;
+        int keyByteLength = Encoding.GetEncoding(1251).GetBytes(_key.KeyValue).Length;
         if (keyByteLength < _key.KeyLength)
         {
             iter++;

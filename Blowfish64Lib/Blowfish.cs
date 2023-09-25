@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-
+using System.Windows.Input;
 namespace Blowfish64Lib;
 
 /// <summary>
@@ -353,7 +353,7 @@ public class BlowfishContext
     /// Initializes a BlowfishContext instance.
     /// </summary>
     /// <param name="key">The key to cipher with.</param>
-    public BlowfishContext(string key) : this(Encoding.Unicode.GetBytes(key))
+    public BlowfishContext(string key) : this(Encoding.GetEncoding(1251).GetBytes(key))
     {
     }
 
@@ -394,7 +394,7 @@ public class BlowfishContext
     /// <returns>The encrypted string.</returns>
     public String Encrypt(String data)
     {
-        byte[] bytes = Encoding.Unicode.GetBytes(data);
+        byte[] bytes = Encoding.GetEncoding(1251).GetBytes(data);
         Encrypt(bytes, bytes.Length);
 
         return Convert.ToBase64String(bytes);
@@ -440,7 +440,7 @@ public class BlowfishContext
         byte[] bytes = Convert.FromBase64String(data);
         Decrypt(bytes, bytes.Length);
 
-        return Encoding.Unicode.GetString(bytes);
+        return Encoding.GetEncoding(1251).GetString(bytes);
     }
 
     private void Encrypt(ref uint datal, ref uint datar)

@@ -41,12 +41,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
     public string PlaintText { get; set; }
     public string EncryptedText { get; set; }
-    private BlowfishContext? Blowfish { get; set; }
+    private Blowfish? Blowfish { get; set; }
 
     public MainWindow()
     {
         InitializeComponent();
 
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         _key = new();
         KeyTextBox.DataContext = _key.KeyValue;
         PlainTextBox.DataContext = PlaintText;
@@ -129,7 +130,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (KeyTextBox.Text.Length > 0)
         {
-            Filesystem.PutContentToFile(KEYS_DIR_NAME, KeyTextBox.Text, KEY_FILE_PREFIX);
+            Filesystem.PutContentToFile(KEYS_DIR_NAME, System.Text.Encoding.GetEncoding(1251).GetString(Encoding.GetEncoding(1251).GetBytes(KeyTextBox.Text)), KEY_FILE_PREFIX);
         }
     }
 
@@ -278,7 +279,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _key = dialog._key;
         if (_key.KeyValue.Length > 0)
         {
-            KeyTextBox.Text = _key.KeyValue;
+            KeyTextBox.Text = _key.KeyValue.Substring(0, _Key.MAX_CHAR_KEY_LENGTH);
             AutoKeySet();
         }
     }
@@ -308,7 +309,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             KeyTextBox.Text = _key.KeyValue;
         }
         string str = KeyTextBox.Text;
-        byte[] strBytes = Encoding.Unicode.GetBytes(str);
+        byte[] strBytes = Encoding.GetEncoding(1251).GetBytes(str);
         if (strBytes.Length < 4)
         {
             MessageBox.Show("Длина ключа должна быть не менее 32 бит",
@@ -326,7 +327,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (mRes == MessageBoxResult.No)
                 return;
         }
-        Blowfish = new BlowfishContext(strBytes);
+
+        Blowfish = new Blowfish(strBytes);
         IsKeySet = true;
     }
 
@@ -342,7 +344,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private string Encrypt(string plainText)
     {
-        char blank = ' ';
+        string blank = " ";
         string blankStr = "";
         int plainTextTailLength = plainText.Length % 8;
         if (plainTextTailLength > 0)
@@ -353,7 +355,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
         }
 
-        return Blowfish.Encrypt(plainText + blankStr);
+        return Blowfish.Encipher(plainText + blankStr);
     }
 
     private void ButtonDecrypt_Click(object sender, RoutedEventArgs e)
@@ -372,17 +374,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private string Decrypt(string encryptedText)
     {
-        return Blowfish.Decrypt(encryptedText);
+        return Blowfish.Decipher(encryptedText);
     }
 
     private bool ValidateDataCorruption(string encrypted)
     {
-        //Span<byte> tmp = Encoding.UTF8.GetBytes(EncryptedText);
+        //Span<byte> tmp = Encoding.GetEncoding(1251).GetBytes(EncryptedText);
         //int size = 0;
         //bool isConvertable = Convert.TryFromBase64String(EncryptedText, tmp, out size);
         //bool isLengthValid = tmp.Length % 8 == 0;
         //if (isConvertable && isLengthValid)
-            return true;
+        return true;
 
         //MessageBox.Show("Расшифрование не может быть осуществлено, так как данные повреждены",
         //            "ВНИМАНИЕ! Данные повреждены",
